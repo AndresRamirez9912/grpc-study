@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package student;
+
+// option go_package = "gRPC;protoStudent";
+option go_package = "src/protos";
+
+
+// Create my models or structures (messages)
+message Student {
+    string id = 1;
+    string name = 2;
+    int32 age = 3;
+};
+
+message StudentRequest {
+    string id =1;
+
+}
+
+message StudentResponse { 
+    string id =1;    
+}
+
+// Methods 
+service StudentService{
+    rpc GetStudent(StudentRequest)returns(Student);
+    rpc CreateStudent(Student) returns(StudentResponse);
+}
