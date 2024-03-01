@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package exam;
+
+option go_package = "src/protos";
+
+// Attributes
+message Exam{
+    string id=1;
+    string name=2;    
+};
+
+message CreateExamRequest{
+    string id=1;
+    string name=2;
+};
+
+message GetTestRequest{
+    string id=1;    
+};
+
+message CreateExamResponse{
+    string id=1;    
+};
+
+// Services
+service ExamService {
+    rpc CreateTest(CreateExamRequest) returns (CreateExamResponse);
+    rpc GetTest(GetTestRequest) returns (Exam);
+}

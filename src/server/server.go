@@ -3,24 +3,27 @@ package server
 import (
 	"context"
 	"gRPC/src/models"
-	"gRPC/src/protos"
+	protos "gRPC/src/protos/student"
 	"gRPC/src/repository"
 )
 
 type Server struct {
-	repo repository.Repository
-	protos.UnimplementedStudentServiceServer 
+	repo repository.StudentRepository
+	protos.UnimplementedStudentServiceServer
 }
 
-func NewStudentServer(repo repository.Repository) *Server {
+func NewStudentServer(repo repository.StudentRepository) *Server {
 	return &Server{repo: repo}
 }
 
 func (s *Server) GetStudent(ctx context.Context, request *protos.StudentRequest) (*protos.Student, error) {
+	// Make the DB operation
 	student, err := s.repo.GetStudent(ctx, request.GetId())
 	if err != nil {
 		return nil, err
 	}
+
+	// Send data
 	return &protos.Student{
 		Id:   student.Id,
 		Name: student.Name,
@@ -29,6 +32,7 @@ func (s *Server) GetStudent(ctx context.Context, request *protos.StudentRequest)
 }
 
 func (s *Server) CreateStudent(ctx context.Context, student *protos.Student) (*protos.StudentResponse, error) {
+	// Make the DB operation
 	newStudent := &models.Student{
 		Id:   student.GetId(),
 		Name: student.GetName(),
@@ -38,6 +42,8 @@ func (s *Server) CreateStudent(ctx context.Context, student *protos.Student) (*p
 	if err != nil {
 		return nil, err
 	}
+
+	// Send data
 	return &protos.StudentResponse{
 		Id: newStudent.Id,
 	}, nil
