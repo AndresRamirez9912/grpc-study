@@ -3,48 +3,83 @@ package server
 import (
 	"context"
 	"gRPC/src/models"
-	protos "gRPC/src/protos/student"
+	examProtos "gRPC/src/protos/exam"
+	studentProtos "gRPC/src/protos/student"
 	"gRPC/src/repository"
 )
 
 type Server struct {
-	repo repository.StudentRepository
-	protos.UnimplementedStudentServiceServer
+	studentRepo repository.StudentRepository
+	examRepo    repository.ExamRepository
+	studentProtos.UnimplementedStudentServiceServer
+	examProtos.UnimplementedExamServiceServer
 }
 
-func NewStudentServer(repo repository.StudentRepository) *Server {
-	return &Server{repo: repo}
+func NewServer(studentRepo repository.StudentRepository, examRepo repository.ExamRepository) *Server {
+	return &Server{studentRepo: studentRepo, examRepo: examRepo}
 }
 
-func (s *Server) GetStudent(ctx context.Context, request *protos.StudentRequest) (*protos.Student, error) {
+func (s *Server) GetStudent(ctx context.Context, request *studentProtos.StudentRequest) (*studentProtos.Student, error) {
 	// Make the DB operation
-	student, err := s.repo.GetStudent(ctx, request.GetId())
+	student, err := s.studentRepo.GetStudent(ctx, request.GetId())
 	if err != nil {
 		return nil, err
 	}
 
 	// Send data
-	return &protos.Student{
+	return &studentProtos.Student{
 		Id:   student.Id,
 		Name: student.Name,
 		Age:  student.Age,
 	}, nil
 }
 
-func (s *Server) CreateStudent(ctx context.Context, student *protos.Student) (*protos.StudentResponse, error) {
+func (s *Server) CreateStudent(ctx context.Context, student *studentProtos.Student) (*studentProtos.StudentResponse, error) {
 	// Make the DB operation
 	newStudent := &models.Student{
 		Id:   student.GetId(),
 		Name: student.GetName(),
 		Age:  student.GetAge(),
 	}
-	err := s.repo.CreateStudent(ctx, newStudent)
+	err := s.studentRepo.CreateStudent(ctx, newStudent)
 	if err != nil {
 		return nil, err
 	}
 
 	// Send data
-	return &protos.StudentResponse{
+	return &studentProtos.StudentResponse{
 		Id: newStudent.Id,
+	}, nil
+}
+
+func (s *Server) CreateExam(ctx context.Context, exam *examProtos.CreateExamRequest) (*examProtos.CreateExamResponse, error) {
+	// Make the DB operation
+	newExam := &models.Exam{
+		Id:   exam.GetId(),
+		Name: exam.GetName(),
+	}
+
+	err := s.examRepo.CreateExam(ctx, newExam)
+	if err != nil {
+		return nil, err
+	}
+
+	// Send response
+	return &examProtos.CreateExamResponse{
+		Id: newExam.Id,
+	}, nil
+}
+
+func (s *Server) GetExam(ctx context.Context, request *examProtos.GetExamRequest) (*examProtos.Exam, error) {
+	// Make the DB operation
+	exam, err := s.examRepo.GetExam(ctx, request.GetId())
+	if err != nil {
+		return nil, err
+	}
+
+	// Send response
+	return &examProtos.Exam{
+		Id:   exam.Id,
+		Name: exam.Name,
 	}, nil
 }

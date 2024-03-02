@@ -35,8 +35,8 @@ func (repo *PostgresRepository) CreateStudent(ctx context.Context, student *mode
 		return err
 	}
 	return nil
-
 }
+
 func (repo *PostgresRepository) GetStudent(ctx context.Context, id string) (*models.Student, error) {
 	row, err := repo.db.QueryContext(ctx, "SELECT * FROM students WHERE id=$1", id)
 	if err != nil {
@@ -57,4 +57,34 @@ func (repo *PostgresRepository) GetStudent(ctx context.Context, id string) (*mod
 		}
 	}
 	return student, nil
+}
+
+func (repo *PostgresRepository) CreateExam(ctx context.Context, test *models.Exam) error {
+	_, err := repo.db.ExecContext(ctx, "INSERT INTO exams (id,name) VALUES ($1,$2)", test.Id, test.Name)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *PostgresRepository) GetExam(ctx context.Context, id string) (*models.Exam, error) {
+	row, err := repo.db.QueryContext(ctx, "SELECT * FROM exams WHERE id=$1", id)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err := row.Close()
+		if err != nil {
+			log.Fatal("Error closing the query", err)
+		}
+	}()
+
+	test := &models.Exam{}
+	for row.Next() {
+		err := row.Scan(&test.Id, &test.Name)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return test, nil
 }

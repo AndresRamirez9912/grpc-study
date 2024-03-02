@@ -1,7 +1,13 @@
 DROP TABLE IF EXISTS students;
+DROP TABLE IF EXISTS exams;
 
 CREATE TABLE students (
     id VARCHAR(32) PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     age INTEGER NOT NULL
+);
+
+CREATE TABLE exams (
+    id VARCHAR(32) PRIMARY KEY,
+    name VARCHAR(200) NOT NULL
 );

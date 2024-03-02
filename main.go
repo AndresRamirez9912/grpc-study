@@ -2,7 +2,9 @@ package main
 
 import (
 	db "gRPC/src/DB"
-	protos "gRPC/src/protos/student"
+	examProtos "gRPC/src/protos/exam"
+	studentProtos "gRPC/src/protos/student"
+
 	"gRPC/src/server"
 	"log"
 	"net"
@@ -19,10 +21,11 @@ func main() {
 	}
 
 	// Create server (handler with the Proto methods)
-	server := server.NewStudentServer(repo)
+	server := server.NewServer(repo, repo)
 
 	s := grpc.NewServer()
-	protos.RegisterStudentServiceServer(s, server)
+	studentProtos.RegisterStudentServiceServer(s, server)
+	examProtos.RegisterExamServiceServer(s, server)
 
 	// Add Reflection connection
 	reflection.Register(s)

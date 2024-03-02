@@ -3,7 +3,7 @@ syntax = "proto3";
 package student;
 
 // option go_package = "gRPC;protoStudent";
-option go_package = "src/protos";
+option go_package = "src/studentProtos";
 
 
 // Create my models or structures (messages)

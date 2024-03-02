@@ -4,7 +4,7 @@
 // 	protoc        v3.12.4
 // source: student.proto
 
-package protos
+package studentProtos
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

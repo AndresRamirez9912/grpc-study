@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: exam.proto
 
-package protos
+package examProtos
 
 import (
 	context "context"
@@ -19,16 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ExamService_CreateTest_FullMethodName = "/exam.ExamService/CreateTest"
-	ExamService_GetTest_FullMethodName    = "/exam.ExamService/GetTest"
+	ExamService_CreateExam_FullMethodName = "/exam.ExamService/CreateExam"
+	ExamService_GetExam_FullMethodName    = "/exam.ExamService/GetExam"
 )
 
 // ExamServiceClient is the client API for ExamService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ExamServiceClient interface {
-	CreateTest(ctx context.Context, in *CreateExamRequest, opts ...grpc.CallOption) (*CreateExamResponse, error)
-	GetTest(ctx context.Context, in *GetTestRequest, opts ...grpc.CallOption) (*Exam, error)
+	CreateExam(ctx context.Context, in *CreateExamRequest, opts ...grpc.CallOption) (*CreateExamResponse, error)
+	GetExam(ctx context.Context, in *GetExamRequest, opts ...grpc.CallOption) (*Exam, error)
 }
 
 type examServiceClient struct {
@@ -39,18 +39,18 @@ func NewExamServiceClient(cc grpc.ClientConnInterface) ExamServiceClient {
 	return &examServiceClient{cc}
 }
 
-func (c *examServiceClient) CreateTest(ctx context.Context, in *CreateExamRequest, opts ...grpc.CallOption) (*CreateExamResponse, error) {
+func (c *examServiceClient) CreateExam(ctx context.Context, in *CreateExamRequest, opts ...grpc.CallOption) (*CreateExamResponse, error) {
 	out := new(CreateExamResponse)
-	err := c.cc.Invoke(ctx, ExamService_CreateTest_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ExamService_CreateExam_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *examServiceClient) GetTest(ctx context.Context, in *GetTestRequest, opts ...grpc.CallOption) (*Exam, error) {
+func (c *examServiceClient) GetExam(ctx context.Context, in *GetExamRequest, opts ...grpc.CallOption) (*Exam, error) {
 	out := new(Exam)
-	err := c.cc.Invoke(ctx, ExamService_GetTest_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ExamService_GetExam_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +61,8 @@ func (c *examServiceClient) GetTest(ctx context.Context, in *GetTestRequest, opt
 // All implementations must embed UnimplementedExamServiceServer
 // for forward compatibility
 type ExamServiceServer interface {
-	CreateTest(context.Context, *CreateExamRequest) (*CreateExamResponse, error)
-	GetTest(context.Context, *GetTestRequest) (*Exam, error)
+	CreateExam(context.Context, *CreateExamRequest) (*CreateExamResponse, error)
+	GetExam(context.Context, *GetExamRequest) (*Exam, error)
 	mustEmbedUnimplementedExamServiceServer()
 }
 
@@ -70,11 +70,11 @@ type ExamServiceServer interface {
 type UnimplementedExamServiceServer struct {
 }
 
-func (UnimplementedExamServiceServer) CreateTest(context.Context, *CreateExamRequest) (*CreateExamResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateTest not implemented")
+func (UnimplementedExamServiceServer) CreateExam(context.Context, *CreateExamRequest) (*CreateExamResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateExam not implemented")
 }
-func (UnimplementedExamServiceServer) GetTest(context.Context, *GetTestRequest) (*Exam, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTest not implemented")
+func (UnimplementedExamServiceServer) GetExam(context.Context, *GetExamRequest) (*Exam, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetExam not implemented")
 }
 func (UnimplementedExamServiceServer) mustEmbedUnimplementedExamServiceServer() {}
 
@@ -89,38 +89,38 @@ func RegisterExamServiceServer(s grpc.ServiceRegistrar, srv ExamServiceServer) {
 	s.RegisterService(&ExamService_ServiceDesc, srv)
 }
 
-func _ExamService_CreateTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ExamService_CreateExam_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateExamRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExamServiceServer).CreateTest(ctx, in)
+		return srv.(ExamServiceServer).CreateExam(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ExamService_CreateTest_FullMethodName,
+		FullMethod: ExamService_CreateExam_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExamServiceServer).CreateTest(ctx, req.(*CreateExamRequest))
+		return srv.(ExamServiceServer).CreateExam(ctx, req.(*CreateExamRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ExamService_GetTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTestRequest)
+func _ExamService_GetExam_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetExamRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExamServiceServer).GetTest(ctx, in)
+		return srv.(ExamServiceServer).GetExam(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ExamService_GetTest_FullMethodName,
+		FullMethod: ExamService_GetExam_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExamServiceServer).GetTest(ctx, req.(*GetTestRequest))
+		return srv.(ExamServiceServer).GetExam(ctx, req.(*GetExamRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -133,12 +133,12 @@ var ExamService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ExamServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateTest",
-			Handler:    _ExamService_CreateTest_Handler,
+			MethodName: "CreateExam",
+			Handler:    _ExamService_CreateExam_Handler,
 		},
 		{
-			MethodName: "GetTest",
-			Handler:    _ExamService_GetTest_Handler,
+			MethodName: "GetExam",
+			Handler:    _ExamService_GetExam_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

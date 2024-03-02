@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package exam;
 
-option go_package = "src/protos";
+option go_package = "src/examProtos";
 
 // Attributes
 message Exam{
@@ -15,7 +15,7 @@ message CreateExamRequest{
     string name=2;
 };
 
-message GetTestRequest{
+message GetExamRequest{
     string id=1;    
 };
 
@@ -25,6 +25,6 @@ message CreateExamResponse{
 
 // Services
 service ExamService {
-    rpc CreateTest(CreateExamRequest) returns (CreateExamResponse);
-    rpc GetTest(GetTestRequest) returns (Exam);
+    rpc CreateExam(CreateExamRequest) returns (CreateExamResponse);
+    rpc GetExam(GetExamRequest) returns (Exam);
 }
