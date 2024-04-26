@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ExamService_CreateExam_FullMethodName = "/exam.ExamService/CreateExam"
-	ExamService_GetExam_FullMethodName    = "/exam.ExamService/GetExam"
+	ExamService_CreateExam_FullMethodName     = "/exam.ExamService/CreateExam"
+	ExamService_GetExam_FullMethodName        = "/exam.ExamService/GetExam"
+	ExamService_CreateQuestion_FullMethodName = "/exam.ExamService/CreateQuestion"
 )
 
 // ExamServiceClient is the client API for ExamService service.
@@ -29,6 +30,7 @@ const (
 type ExamServiceClient interface {
 	CreateExam(ctx context.Context, in *CreateExamRequest, opts ...grpc.CallOption) (*CreateExamResponse, error)
 	GetExam(ctx context.Context, in *GetExamRequest, opts ...grpc.CallOption) (*Exam, error)
+	CreateQuestion(ctx context.Context, opts ...grpc.CallOption) (ExamService_CreateQuestionClient, error)
 }
 
 type examServiceClient struct {
@@ -57,12 +59,47 @@ func (c *examServiceClient) GetExam(ctx context.Context, in *GetExamRequest, opt
 	return out, nil
 }
 
+func (c *examServiceClient) CreateQuestion(ctx context.Context, opts ...grpc.CallOption) (ExamService_CreateQuestionClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ExamService_ServiceDesc.Streams[0], ExamService_CreateQuestion_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &examServiceCreateQuestionClient{stream}
+	return x, nil
+}
+
+type ExamService_CreateQuestionClient interface {
+	Send(*Question) error
+	CloseAndRecv() (*CreateQuestionResponse, error)
+	grpc.ClientStream
+}
+
+type examServiceCreateQuestionClient struct {
+	grpc.ClientStream
+}
+
+func (x *examServiceCreateQuestionClient) Send(m *Question) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *examServiceCreateQuestionClient) CloseAndRecv() (*CreateQuestionResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(CreateQuestionResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ExamServiceServer is the server API for ExamService service.
 // All implementations must embed UnimplementedExamServiceServer
 // for forward compatibility
 type ExamServiceServer interface {
 	CreateExam(context.Context, *CreateExamRequest) (*CreateExamResponse, error)
 	GetExam(context.Context, *GetExamRequest) (*Exam, error)
+	CreateQuestion(ExamService_CreateQuestionServer) error
 	mustEmbedUnimplementedExamServiceServer()
 }
 
@@ -75,6 +112,9 @@ func (UnimplementedExamServiceServer) CreateExam(context.Context, *CreateExamReq
 }
 func (UnimplementedExamServiceServer) GetExam(context.Context, *GetExamRequest) (*Exam, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExam not implemented")
+}
+func (UnimplementedExamServiceServer) CreateQuestion(ExamService_CreateQuestionServer) error {
+	return status.Errorf(codes.Unimplemented, "method CreateQuestion not implemented")
 }
 func (UnimplementedExamServiceServer) mustEmbedUnimplementedExamServiceServer() {}
 
@@ -125,6 +165,32 @@ func _ExamService_GetExam_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExamService_CreateQuestion_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ExamServiceServer).CreateQuestion(&examServiceCreateQuestionServer{stream})
+}
+
+type ExamService_CreateQuestionServer interface {
+	SendAndClose(*CreateQuestionResponse) error
+	Recv() (*Question, error)
+	grpc.ServerStream
+}
+
+type examServiceCreateQuestionServer struct {
+	grpc.ServerStream
+}
+
+func (x *examServiceCreateQuestionServer) SendAndClose(m *CreateQuestionResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *examServiceCreateQuestionServer) Recv() (*Question, error) {
+	m := new(Question)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ExamService_ServiceDesc is the grpc.ServiceDesc for ExamService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -141,6 +207,12 @@ var ExamService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ExamService_GetExam_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "CreateQuestion",
+			Handler:       _ExamService_CreateQuestion_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "exam.proto",
 }

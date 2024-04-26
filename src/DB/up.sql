@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS students;
 DROP TABLE IF EXISTS exams;
+DROP TABLE IF EXISTS questions;
 
 CREATE TABLE students (
     id VARCHAR(32) PRIMARY KEY,
@@ -10,4 +11,12 @@ CREATE TABLE students (
 CREATE TABLE exams (
     id VARCHAR(32) PRIMARY KEY,
     name VARCHAR(200) NOT NULL
+);
+
+CREATE TABLE questions(
+    id VARCHAR(32) PRIMARY KEY,
+    exam_id VARCHAR(32) NOT NULL,
+    question VARCHAR(255) NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    FOREIGN KEY (exam_id) REFERENCES exams(id)
 );

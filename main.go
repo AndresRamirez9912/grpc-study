@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// Create server (handler with the Proto methods)
-	server := server.NewServer(repo, repo)
+	server := server.NewServer(repo)
 
 	s := grpc.NewServer()
 	studentProtos.RegisterStudentServiceServer(s, server)

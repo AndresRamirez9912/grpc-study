@@ -15,6 +15,17 @@ message CreateExamRequest{
     string name=2;
 };
 
+message Question{
+    string id=1;
+    string answer =2;
+    string question =3;
+    string examId =4;
+}
+
+message CreateQuestionResponse{
+    bool ok =1;
+}
+
 message GetExamRequest{
     string id=1;    
 };
@@ -27,4 +38,5 @@ message CreateExamResponse{
 service ExamService {
     rpc CreateExam(CreateExamRequest) returns (CreateExamResponse);
     rpc GetExam(GetExamRequest) returns (Exam);
+    rpc CreateQuestion(stream Question) returns (CreateQuestionResponse);
 }

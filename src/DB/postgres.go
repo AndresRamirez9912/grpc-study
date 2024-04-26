@@ -88,3 +88,11 @@ func (repo *PostgresRepository) GetExam(ctx context.Context, id string) (*models
 	}
 	return test, nil
 }
+
+func (repo *PostgresRepository) CreateQuestion(ctx context.Context, question *models.Question) error {
+	_, err := repo.db.ExecContext(ctx, "INSERT INTO questions (id, exam_id, question, answer) VALUES ($1,$2,$3,$4)", question.Id, question.ExamId, question.Question, question.Answer)
+	if err != nil {
+		return err
+	}
+	return nil
+}
